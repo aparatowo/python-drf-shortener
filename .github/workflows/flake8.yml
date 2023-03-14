@@ -1,0 +1,19 @@
+---
+name: Flake8 checks
+
+on: [push]
+
+jobs:
+  lint:
+    name: Flake8 linter run
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Chekout
+        uses: actions/chekout@v2
+      - name: Lint
+        run: docker-compose run --rm app -c "flake8"
