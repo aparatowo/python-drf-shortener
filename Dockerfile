@@ -3,13 +3,14 @@ LABEL maintainer="Rafal Nitychoruk"
 
 ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements.txt /tmp/requirements.txt
-COPY ./requirements.dev.txt /tmp/requirements.dev.txt
-COPY ./app /app
+COPY /requirements.txt /tmp/requirements.txt
+COPY /requirements.dev.txt /tmp/requirements.dev.txt
+COPY src/app/ /app
 WORKDIR /app
 EXPOSE 8000
 
 ARG DEV=false
+
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     apk add --update --no-cache postgresql-client && \
