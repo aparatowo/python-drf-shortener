@@ -11,4 +11,4 @@ class UrlModel(models.Model):
         primary_key=True,
         db_index=True
     )
-    original_url = models.CharField(max_length=256)
+    url = models.CharField(max_length=256)

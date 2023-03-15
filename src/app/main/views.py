@@ -1,5 +1,5 @@
 import os
-# from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -14,16 +14,16 @@ if domain is None:
 @csrf_exempt
 def get_url(request):
     print(dict(request))
-    user_url = request.POST['url']
+    user_url = request.POST.get('url')
     if user_url is not None:
         shortened_url = service.shorten(user_url)
         return HttpResponse({shortened_url}, status=200)
     return HttpResponse("Send your URL", status=200)
 
 
-def redirect_to_url(request, url):
+def redirect_to_url(request):
     try:
-        shortened_url = service.load_url(url)
+        long_url = service.load_url(request.METADATA.get('PATH_INFO')[1:])
     except ValueError:
         return HttpResponse(status=404)
-    return HttpResponse(shortened_url, status=200)
+    return redirect(long_url)

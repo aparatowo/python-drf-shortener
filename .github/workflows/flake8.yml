@@ -16,4 +16,4 @@ jobs:
       - name: Chekout
         uses: actions/chekout@v2
       - name: Lint
-        run: docker-compose run --rm app -c "flake8"
+        run: docker compose run --rm app -c "flake8"
