@@ -1,7 +1,10 @@
 import os
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
+
 
 from . import service
 
@@ -12,18 +15,20 @@ if domain is None:
 
 
 @csrf_exempt
+@api_view(['POST'])
+@renderer_classes([JSONRenderer])
 def get_url(request):
-    print(dict(request))
-    user_url = request.POST.get('url')
-    if user_url is not None:
-        shortened_url = service.shorten(user_url)
-        return HttpResponse({shortened_url}, status=200)
-    return HttpResponse("Send your URL", status=200)
+    # user_url = request.POST.get('url')
+    if request.data:
+        shortened_url = service.shorten(request.data)
+        return Response({shortened_url}, status=200)
+    return Response("Send your URL", status=200)
 
 
-def redirect_to_url(request):
+@api_view(['GET'])
+def go_to(request, id):
     try:
-        long_url = service.load_url(request.METADATA.get('PATH_INFO')[1:])
+        long_url = service.load_url(id)
     except ValueError:
-        return HttpResponse(status=404)
+        return Response(status=404)
     return redirect(long_url)
